@@ -1,0 +1,74 @@
+import random
+from Search_Agents.WordVecWrapper import find_path_to_target
+import time
+import pickle
+import matplotlib.pyplot as plt
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+import wikipediaapi
+import copy
+def calc_page_similarity(page_1_text, page_2_text):
+    # Create a TF-IDF vectorizer
+    vectorizer = TfidfVectorizer()
+
+    # Fit and transform the text data
+    tfidf_matrix = vectorizer.fit_transform([page_1_text, page_2_text])
+
+    # Calculate the cosine similarity between the two text vectors
+    similarity = cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
+
+    return similarity
+
+def get_page_text(page_title):
+        wiki_wiki = wikipediaapi.Wikipedia(user_agent="Wikipedia game solution grapher (lu.kev@northeastern.edu)",language="en")
+        page = wiki_wiki.page(page_title)
+        if not page.exists():
+            return {"Error": "Page does not exist"}
+        
+        return page.text
+#Mask to run wrappers with different parameters
+def run_search_program(word_bag, num_runs, num_iterations):
+    results = []
+    for iterations in range(10, num_iterations, 10):
+        similarities = []
+        copy_of_word_bag = copy.deepcopy(word_bag)
+
+        for i in range(num_runs):
+            words = random.sample(copy_of_word_bag, 2)
+            for item in words:
+                copy_of_word_bag.remove(item)
+            priority_queue, path = find_path_to_target(words[0], words[1], iterations, False)
+            final_word = path[-1]
+            similarity = calc_page_similarity(get_page_text(words[1]), get_page_text(final_word))
+            similarities.append(similarity)
+        results.append(np.mean(similarities))
+        similarities = []
+        # Save variables to a file using pickle.dump
+    with open('iteration_results.pkl', 'wb') as file:
+        pickle.dump((results), file)
+        print(results)
+
+#Creates bag of words
+def get_words(file_path):
+    # Specify the path to your text file
+
+    # Read the titles from the text file into a list
+    with open(file_path, 'r') as file:
+        titles_list = [line.strip() for line in file]
+    return titles_list
+
+if (__name__ == "__main__"):
+    # Plotting the results
+    with open('iteration_results.pkl', 'rb') as file:
+        accuracies = pickle.load(file)
+    plt.plot(range(10, 101, 10), accuracies, marker='o')
+    plt.xlabel('Number of Iterations')
+    plt.ylabel('Mean Accuracy')
+    plt.title('Accuracy vs. Number of Iterations (DLS no-epsilon)')
+    plt.grid(True)
+    plt.show()
+
+
+    
+    
