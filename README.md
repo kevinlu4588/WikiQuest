@@ -9,4 +9,4 @@ The Wikipedia Game is a game where a starting Wikipedia encyclopedia page is def
 
 This theoretically can be neatly solved with a graph-search, specifically A* search, but the problem lies with finding a consistent heuristic for that purpose...
 
-(Project writeup)[https://docs.google.com/document/d/e/2PACX-1vTf3FpUy2Kcj1NlWHyqj-gmoQEo01_5-PFF1D81wU7yDkW-WTkLZAKrgWgylPSb1gG-ckgX-JNr-KaI/pub]
+[Project writeup](https://docs.google.com/document/d/e/2PACX-1vTf3FpUy2Kcj1NlWHyqj-gmoQEo01_5-PFF1D81wU7yDkW-WTkLZAKrgWgylPSb1gG-ckgX-JNr-KaI/pub)
